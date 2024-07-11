@@ -1,0 +1,56 @@
+# Ignore Terraform state files
+*.tfstate
+*.tfstate.*
+
+# Ignore crash log files
+crash.log
+crash.*.log
+
+# Ignore .terraform directories
+**/.terraform/*
+
+# Ignore .tfvars files, which are likely to contain sensitive data
+*.tfvars
+*.tfvars.json
+
+# Ignore override files as they're usually used to override resources locally and so
+# are not checked in
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+# Ignore .env files, which often contain environment-specific secrets
+.env
+
+# Ignore .terraform.lock.hcl, which is specific to each environment
+.terraform.lock.hcl
+
+# Ignore any .pem files (SSH keys)
+*.pem
+
+# Ignore any .log files
+*.log
+
+# Ignore temporary files
+*.tmp
+
+# Ignore any directories named 'temp' or 'tmp'
+temp/
+tmp/
+
+# Ignore Mac system files
+.DS_Store
+
+# Ignore Windows thumbnail cache files
+Thumbs.db
+
+# Ignore IDE and editor folders
+.vscode/
+.idea/
+*.swp
+*.swo
