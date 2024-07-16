@@ -1,1 +1,2 @@
-s3_bucket_name = "test_bucket_name"
+s3_bucket_name = "wlevan3-cloud-resume-challenge"
+env            = "development"
