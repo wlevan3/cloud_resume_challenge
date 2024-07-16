@@ -50,7 +50,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          name: my-artifact
+          name: tfplan
       - name: Terraform
         uses: hashicorp/setup-terraform@v3
       - run: pwd
