@@ -51,6 +51,9 @@ jobs:
         with:
           name: tfplan
           path: ./infrastructure
+      - run: ls -al
+      - run: pwd
+      - run: ls -al ./infrastructure
       - name: Replace AWS region in providers.tf
         run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" ./infrastructure/providers.tf
       - name: Download Terraform
