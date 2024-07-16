@@ -8,6 +8,7 @@ permissions:
 
 jobs:
   scan:
+    name: scan
     runs-on: ubuntu-latest
     steps:
       - name: Git clone the repository
@@ -45,7 +46,7 @@ jobs:
           category: "infrastructure"
 
   plan:
-    needs: [scan]
+    needs: scan
     runs-on: ubuntu-latest
     steps:
       - name: Git clone the repository
@@ -85,7 +86,7 @@ jobs:
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ vars.AWS_REGION }}
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: tfplan
           path: ./infrastructure/
@@ -98,3 +99,57 @@ jobs:
         run: terraform -chdir="./infrastructure" init
       - name: Terraform Apply
         run: terraform -chdir="./infrastructure" apply "development.tfplan"
+  plan_destroy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: arn:aws:iam::${{vars.AWS_ACCOUNT_ID_DEV}}:role/${{vars.ROLE_NAME}}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ vars.AWS_REGION }}
+      - run: ls -al
+      - run: pwd
+      - run: ls -al ./infrastructure
+      - name: Download Terraform
+        uses: hashicorp/setup-terraform@v3
+      - name: Terraform Init
+        run: terraform -chdir="./infrastructure" init
+      - name: Terraform Plan
+        run: terraform -chdir="./infrastructure" plan -var-file=environments/development.tfvars -out=development-destroy.tfplan
+      - name: Upload tfplan
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: ./infrastructure/development-destroy.tfplan
+  destroy:
+    runs-on: ubuntu-latest
+    environment: development_destroy
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: arn:aws:iam::${{vars.AWS_ACCOUNT_ID_DEV}}:role/${{vars.ROLE_NAME}}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+      - run: ls -al
+      - run: pwd
+      - run: ls -al ./infrastructure
+      - run: cp ./development-destroy.tfplan ./infrastructure/
+      - run: ls -al
+      - run: pwd
+      - run: ls -al ./infrastructure
+      - name: Download Terraform
+        uses: hashicorp/setup-terraform@v3
+      - name: Terraform Init
+        run: terraform -chdir="./infrastructure" init
+      - name: Terraform Apply
+        run: terraform -chdir="./infrastructure" apply "development-destroy.tfplan"
