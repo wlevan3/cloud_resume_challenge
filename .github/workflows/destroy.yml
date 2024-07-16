@@ -24,7 +24,7 @@ jobs:
       - run: terraform -chdir=./infrastructure init
       - run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" ./infrastructure/providers.tf
       - id: plan
-        run: terraform -chdir=./infrastructure plan -destroy -out=development-destroy.tfplan
+        run: terraform -chdir=./infrastructure plan -destroy -var-file=environments/development.yml -out=development-destroy.tfplan
       - name: Upload tfplan
         uses: actions/upload-artifact@v2
         with:
