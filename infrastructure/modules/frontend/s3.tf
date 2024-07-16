@@ -6,6 +6,7 @@ locals {
   }
 
   frontend_path = "${path.module}/../../frontend"
+  current_time  = formatdate("YYYYMMDDhhmmss", timestamp())
 }
 
 resource "aws_kms_key" "key" {
@@ -15,7 +16,7 @@ resource "aws_kms_key" "key" {
 
 resource "aws_kms_alias" "key" {
   target_key_id = aws_kms_key.key.id
-  name          = "alias/${var.s3_bucket_name}"
+  name          = "alias/${var.s3_bucket_name}-${locals.current_time}"
 }
 
 resource "aws_s3_bucket" "website" {
