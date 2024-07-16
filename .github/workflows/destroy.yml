@@ -29,7 +29,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: tfplan
-          path: ./*
+          path: ./**
   apply_destroy:
     name: "Terraform Apply Destroy"
     needs: [plan_destroy]
@@ -51,7 +51,7 @@ jobs:
       - name: Download Terraform
         uses: hashicorp/setup-terraform@v3
 
-        - name: Terraform Init
+      - name: Terraform Init
         run: terraform -chdir=./infrastructure init
       - name: Terraform Apply  Destroy
-        run: terraform -chdir=""./infrastructure" apply "development-destroy.tfplan"
+        run: terraform -chdir="./infrastructure" apply "development-destroy.tfplan"
