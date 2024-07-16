@@ -61,4 +61,4 @@ jobs:
       - name: Terraform Init
         run: terraform -chdir=./infrastructure init
       - name: Terraform Apply  Destroy
-        run: terraform -chdir="./infrastructure" apply "development-destroy.tfplan"
+        run: terraform -chdir="./infrastructure" apply "../development-destroy.tfplan"
