@@ -1,4 +1,4 @@
-name: "Terraform Plan"
+name: "Terraform Destroy"
 on: workflow_dispatch
 permissions:
   id-token: write # This is required for requesting the JWT
@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   plan_destroy:
-    # name: "Terraform Plan"
+    name: "Terraform Plan Destroy"
     runs-on: ubuntu-latest
     steps:
       - name: Git clone the repository
@@ -34,6 +34,7 @@ jobs:
           path: development-destroy.tfplan
 
   apply_destroy:
+    name: "Terraform Apply Destroy"
     needs: [plan_destroy]
     runs-on: ubuntu-latest
     environment: development_destroy
