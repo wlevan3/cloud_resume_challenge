@@ -23,6 +23,8 @@ jobs:
       - run: pwd
       - run: ls -al
       - run: terraform -chdir=infrastructure init
+      # Perform the substitution
+      - run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" providers.tf
       - id: plan
         run: terraform -chdir=infrastructure plan -out=development.tfplan  -var-file=environments/development.tfvars
       - run: echo ${{ steps.plan.outputs.stdout }}
