@@ -67,7 +67,7 @@ jobs:
       - name: Terraform Plan
         run: terraform -chdir=./infrastructure plan -out=development.tfplan  -var-file=./environments/development.tfvars
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: tfplan
           path: ./infrastructure/development.tfplan
