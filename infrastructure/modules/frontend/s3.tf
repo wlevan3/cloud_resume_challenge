@@ -42,7 +42,7 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
 
 resource "aws_s3_object" "file" {
   for_each     = fileset(local.frontend_path, "*.{html,css,js}")
-  bucket       = aws_s3_bucket.bucket.id
+  bucket       = aws_s3_bucket.website.id
   key          = each.value
   source       = each.value
   content_type = lookup(local.content_types, regex("\\.[^.]+$", each.value), null)
