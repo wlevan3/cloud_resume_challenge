@@ -65,7 +65,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: tfplan
-          path: development.tfplan
+          path: ./infrastructure/development.tfplan
   apply:
     needs: [plan]
     runs-on: ubuntu-latest
