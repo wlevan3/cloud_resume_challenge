@@ -65,14 +65,15 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: tfplan
-          path: ./infrastructure/development.tfplan
+          path: |
+            ./infrastructure/**
   apply:
     needs: [plan]
     runs-on: ubuntu-latest
     environment: development
     steps:
-      - name: Git clone the repository
-        uses: actions/checkout@v4
+      # - name: Git clone the repository
+      #   uses: actions/checkout@v4
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1.7.0
         with:
@@ -87,4 +88,4 @@ jobs:
         uses: hashicorp/setup-terraform@v3
       - run: terraform -chdir=./infrastructure init
       - run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" ./infrastructure/providers.tf
-      - run: terraform -chdir=./infrastructure plan -out=development.tfplan  -var-file=./environments/development.tfvars
+      - run: terraform -chdir=./infrastructure apply "development.tfplan"
