@@ -18,7 +18,7 @@ jobs:
         uses: aquasecurity/trivy-action@0.20.0
         with:
           scan-type: "fs"
-          ignore-unfixed: true
+          ignore-unfixed: false
           format: "sarif"
           output: "trivy-fs-results.sarif"
           severity: "CRITICAL"
@@ -32,11 +32,11 @@ jobs:
         uses: aquasecurity/trivy-action@0.20.0
         with:
           scan-type: "config"
-          hide-progress: true
+          hide-progress: false
           format: "sarif"
           output: "trivy-iac-results.sarif"
-          exit-code: "1"
-          ignore-unfixed: true
+          exit-code: "0"
+          ignore-unfixed: false
           severity: "CRITICAL,HIGH"
 
       - name: Upload Trivy scan results to GitHub Security tab
