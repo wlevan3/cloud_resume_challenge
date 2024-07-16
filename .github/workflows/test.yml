@@ -84,6 +84,9 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: tfplan
+      - run: ls -al
+      - run: pwd
+      - run: ls -al ./infrastructure
       - name: Download Terraform
         uses: hashicorp/setup-terraform@v3
       - name: Terraform Init
