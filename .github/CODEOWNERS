@@ -1,5 +1,9 @@
 # This is a sample CODEOWNERS file
 
+
+/.github/CODEOWNERS @wlevan3
+/.github/ @wlevan3
+
 # Assign ownership of all files in the repository to a specific user or team
 *       @wlevan3
 
