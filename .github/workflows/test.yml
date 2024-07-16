@@ -23,13 +23,12 @@ jobs:
       - run: pwd
       - run: ls -al
       - run: terraform -chdir=./infrastructure init
-      # Perform the substitution
       - run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" ./infrastructure/providers.tf
       - id: plan
         run: terraform -chdir=./infrastructure plan -out=development.tfplan  -var-file=./environments/development.tfvars
-      - run: echo ${{ steps.plan.outputs.stdout }}
-      - run: echo ${{ steps.plan.outputs.stderr }}
-      - run: echo ${{ steps.plan.outputs.exitcode }}
+      # - run: echo ${{ steps.plan.outputs.stdout }}
+      # - run: echo ${{ steps.plan.outputs.stderr }}
+      # - run: echo ${{ steps.plan.outputs.exitcode }}
 
       # - uses: hashicorp/setup-terraform@v3
       # - name: Upload Configuration
