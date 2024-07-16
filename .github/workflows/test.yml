@@ -24,7 +24,7 @@ jobs:
       - run: ls -al
       - run: terraform -chdir=infrastructure init
       - id: plan
-        run: terraform -chdir=infrastructure -var-file=environments/development.tfvars plan -out=tfplan
+        run: terraform -chdir=infrastructure plan -out=development.tfplan  -var-file=environments/development.tfvars
       - run: echo ${{ steps.plan.outputs.stdout }}
       - run: echo ${{ steps.plan.outputs.stderr }}
       - run: echo ${{ steps.plan.outputs.exitcode }}
