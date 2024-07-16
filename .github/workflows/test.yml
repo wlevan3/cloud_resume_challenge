@@ -7,7 +7,7 @@ permissions:
   security-events: write
 
 jobs:
-  plan:
+  scan:
     # name: "Terraform Plan"
     runs-on: ubuntu-latest
     steps:
@@ -107,6 +107,27 @@ jobs:
       #         body: output
       #       });
 
+  plan:
+    needs: [scan]
+    runs-on: ubuntu-latest
+    # environment: development
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: arn:aws:iam::${{vars.AWS_ACCOUNT_ID_DEV}}:role/${{vars.ROLE_NAME}}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Terraform
+        uses: hashicorp/setup-terraform@v3
+      - run: pwd
+      - run: ls -al
+      - run: terraform -chdir=./infrastructure init
+      - run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" ./infrastructure/providers.tf
+      - id: plan
+        run: terraform -chdir=./infrastructure plan -out=development.tfplan  -var-file=./environments/development.tfvars
   apply:
     needs: [plan]
     runs-on: ubuntu-latest
@@ -117,7 +138,7 @@ jobs:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1.7.0
         with:
-          role-to-assume: arn:aws:iam::${{vars.AWS_ACCOUNT_ID}}:role/${{vars.ROLE_NAME}}
+          role-to-assume: arn:aws:iam::${{vars.AWS_ACCOUNT_ID_DEV}}:role/${{vars.ROLE_NAME}}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ vars.AWS_REGION }}
       - name: Terraform
