@@ -43,10 +43,10 @@ jobs:
         with:
           sarif_file: "trivy-iac-results.sarif"
           category: "infrastructure"
+
   plan:
     needs: [scan]
     runs-on: ubuntu-latest
-    # environment: development
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
@@ -62,6 +62,8 @@ jobs:
         run: terraform -chdir=./infrastructure init
       - name: Create providers.tf
         run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" ./infrastructure/providers.tf
+      - name: Terraform Validate
+        run: terraform -chdir=./infrastructure validate -var-file=./environments/development.tfvars
       - name: Terraform Plan
         run: terraform -chdir=./infrastructure plan -out=development.tfplan  -var-file=./environments/development.tfvars
       - name: Upload artifacts
