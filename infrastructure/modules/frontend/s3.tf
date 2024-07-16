@@ -8,9 +8,32 @@ locals {
   frontend_path = "${path.module}/../../frontend"
 }
 
+resource "aws_kms_key" "key" {
+  description         = "This key is used to encrypt bucket objects"
+  enable_key_rotation = true
+}
+
+resource "aws_kms_alias" "key" {
+  target_key_id = aws_kms_key.key.id
+  name          = "alias/${var.s3_bucket_name}"
+}
+
 resource "aws_s3_bucket" "website" {
   bucket = var.s3_bucket_name
 }
+
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
+  bucket = aws_s3_bucket.website.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = aws_kms_key.key.arn
+      sse_algorithm     = "aws:kms"
+    }
+  }
+}
+
 
 resource "aws_s3_bucket_public_access_block" "bucket_access_block" {
   bucket = aws_s3_bucket.website.id
