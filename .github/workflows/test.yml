@@ -100,6 +100,7 @@ jobs:
       - name: Terraform Apply
         run: terraform -chdir="./infrastructure" apply "development.tfplan"
   plan_destroy:
+    needs: [apply]
     runs-on: ubuntu-latest
     steps:
       - name: Git clone the repository
@@ -125,6 +126,7 @@ jobs:
           name: tfplan
           path: ./infrastructure/development-destroy.tfplan
   destroy:
+    needs: [plan_destroy]
     runs-on: ubuntu-latest
     environment: development_destroy
     steps:
