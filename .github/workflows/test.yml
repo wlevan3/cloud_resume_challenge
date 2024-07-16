@@ -20,9 +20,11 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
       - name: Terraform
         uses: hashicorp/setup-terraform@v3
-      - run: terraform init
+      - run: pwd
+      - run: ls -al
+      - run: terraform -chdir=infrastructure init
       - id: plan
-        run: terraform plan -out=tfplan
+        run: terraform -chdir=infrastructure -var-file=environments/development.tfvars plan -out=tfplan
       - run: echo ${{ steps.plan.outputs.stdout }}
       - run: echo ${{ steps.plan.outputs.stderr }}
       - run: echo ${{ steps.plan.outputs.exitcode }}
