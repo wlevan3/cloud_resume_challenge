@@ -1,0 +1,16 @@
+# This is a sample CODEOWNERS file
+
+# Assign ownership of all files in the repository to a specific user or team
+*       @wlevan3
+
+# Assign ownership of a specific file to a different user or team
+/path/to/file       @otheruser
+
+# Assign ownership of a specific file pattern to a different user or team
+/path/to/files/*    @teamname
+
+# Assign ownership of a specific file extension to a different user or team
+*.txt               @teamname
+
+# Assign ownership of a specific directory to a different user or team
+/path/to/directory/ @teamname
