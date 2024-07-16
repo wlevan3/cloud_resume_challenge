@@ -3,6 +3,7 @@
 *.tfstate.*
 
 # Ignore Terraform plan files
+*tfplan*
 *.tfplan
 
 # Ignore crash log files
@@ -11,10 +12,6 @@ crash.*.log
 
 # Ignore .terraform directories
 **/.terraform/*
-
-# Ignore .tfvars files, which are likely to contain sensitive data
-*.tfvars
-*.tfvars.json
 
 # Ignore override files as they're usually used to override resources locally and so
 # are not checked in
