@@ -19,11 +19,13 @@ jobs:
           role-to-assume: arn:aws:iam::${{vars.AWS_ACCOUNT_ID_DEV}}:role/${{vars.ROLE_NAME}}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Replace AWS region in providers.tf
+        run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" ./infrastructure/providers.tf
       - name: Download Terraform
         uses: hashicorp/setup-terraform@v3
       - run: terraform -chdir=./infrastructure init
-      - run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" ./infrastructure/providers.tf
-      - id: plan
+      - name: Terraform Plan Destroy
         run: terraform -chdir=./infrastructure plan -destroy -var-file=environments/development.tfvars -out=development-destroy.tfplan
       - name: Upload tfplan
         uses: actions/upload-artifact@v2
@@ -49,6 +51,8 @@ jobs:
         with:
           name: tfplan
           path: ./infrastructure
+      - name: Replace AWS region in providers.tf
+        run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" ./infrastructure/providers.tf
       - name: Download Terraform
         uses: hashicorp/setup-terraform@v3
 
