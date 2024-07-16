@@ -1,0 +1,60 @@
+name: "Terraform Plan"
+on: workflow_dispatch
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+  actions: read
+  security-events: write
+
+jobs:
+  plan_destroy:
+    # name: "Terraform Plan"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: arn:aws:iam::${{vars.AWS_ACCOUNT_ID_DEV}}:role/${{vars.ROLE_NAME}}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Terraform
+        uses: hashicorp/setup-terraform@v3
+      - run: pwd
+      - run: ls -al
+      - run: terraform -chdir=./infrastructure init
+      - run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" ./infrastructure/providers.tf
+      - id: plan
+        run: terraform -chdir=./infrastructure plan -destroy -out=development-destroy.tfplan
+      - name: Upload tfplan
+        uses: actions/upload-artifact@v2
+        with:
+          name: tfplan
+          path: development-destroy.tfplan
+
+  apply_destroy:
+    needs: [plan_destroy]
+    runs-on: ubuntu-latest
+    environment: development_destroy
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: arn:aws:iam::${{vars.AWS_ACCOUNT_ID_DEV}}:role/${{vars.ROLE_NAME}}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: my-artifact
+      - name: Terraform
+        uses: hashicorp/setup-terraform@v3
+      - run: pwd
+      - run: ls -al
+      - run: terraform -chdir=./infrastructure init
+      - run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" ./infrastructure/providers.tf
+      - id: plan
+        run: terraform -chdir=./infrastructure plan -out=development.tfplan  -var-file=./environments/development.tfvars
