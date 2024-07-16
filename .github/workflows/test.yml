@@ -63,7 +63,7 @@ jobs:
       - name: Create providers.tf
         run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" ./infrastructure/providers.tf
       - name: Terraform Validate
-        run: terraform -chdir=./infrastructure validate -var-file=./environments/development.tfvars
+        run: terraform -chdir=./infrastructure validate
       - name: Terraform Plan
         run: terraform -chdir=./infrastructure plan -out=development.tfplan  -var-file=./environments/development.tfvars
       - name: Upload artifacts
