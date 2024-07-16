@@ -4,13 +4,13 @@
 *       @wlevan3
 
 # Assign ownership of a specific file to a different user or team
-/path/to/file       @otheruser
+#/path/to/file       @otheruser
 
 # Assign ownership of a specific file pattern to a different user or team
-/path/to/files/*    @teamname
+#/path/to/files/*    @teamname
 
 # Assign ownership of a specific file extension to a different user or team
-*.txt               @teamname
+#*.txt               @teamname
 
 # Assign ownership of a specific directory to a different user or team
-/path/to/directory/ @teamname
+#/path/to/directory/ @teamname
