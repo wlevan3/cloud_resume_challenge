@@ -76,7 +76,7 @@ resource "aws_s3_bucket_policy" "allow_access_from_specific_role" {
         Sid       = "AllowSpecificRoleAccess"
         Effect    = "Allow"
         Principal = "*"
-        Action    = "s3:GetObject"
+        Action    = "s3:*"
         Resource  = "${aws_s3_bucket.website.arn}/*"
         Condition = {
           StringEquals = {
