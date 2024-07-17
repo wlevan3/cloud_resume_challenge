@@ -66,38 +66,36 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
 #   )
 # }
 
-resource "aws_s3_bucket_policy" "bucket_policy" {
+resource "aws_s3_bucket_policy" "allow_access_from_specific_role" {
   bucket = aws_s3_bucket.website.id
+
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "IPAllow"
+        Sid       = "AllowSpecificRoleAccess"
         Effect    = "Allow"
         Principal = "*"
-        Action    = "s3:*"
-        Resource = [
-          "${aws_s3_bucket.website.arn}",
-          "${aws_s3_bucket.website.arn}/*"
-        ]
+        Action    = "s3:GetObject"
+        Resource  = "${aws_s3_bucket.website.arn}/*"
         Condition = {
-          IpAddress = {
-            "aws:SourceIp" = "98.255.239.145/32"
+          StringEquals = {
+            "aws:PrincipalArn" = "arn:aws:iam::523671527743:role/GithubActionsCICD"
           }
         }
       },
       {
-        Sid       = "DenyAllExceptSpecificIP"
+        Sid       = "DenyAllExceptSpecificRole"
         Effect    = "Deny"
         Principal = "*"
         Action    = "s3:*"
         Resource = [
-          "${aws_s3_bucket.website.arn}",
+          aws_s3_bucket.website.arn,
           "${aws_s3_bucket.website.arn}/*"
         ]
         Condition = {
-          NotIpAddress = {
-            "aws:SourceIp" = "98.255.239.145/32"
+          StringNotEquals = {
+            "aws:PrincipalArn" = "arn:aws:iam::523671527743:role/GithubActionsCICD"
           }
         }
       }
