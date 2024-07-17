@@ -114,6 +114,8 @@ jobs:
       - run: ls -al
       - run: pwd
       - run: ls -al ./infrastructure
+      - name: Create providers.tf
+        run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" ./infrastructure/providers.tf
       - name: Download Terraform
         uses: hashicorp/setup-terraform@v3
       - name: Terraform Init
