@@ -114,12 +114,10 @@ resource "aws_s3_bucket_policy" "allow_access_from_specific_role" {
 
 
 resource "aws_s3_object" "file" {
-  for_each     = fileset(local.frontend_path, "*.{html,css,js}")
-  bucket       = aws_s3_bucket.website.id
-  key          = each.value
-  source       = each.value
-  content_type = lookup(local.content_types, regex("\\.[^.]+$", each.value), null)
-  source_hash  = filemd5(each.value)
+  bucket  = aws_s3_bucket.website.id
+  key     = data.local_file.index
+  content = data.local_file.index.content
+  etag    = filemd5(data.local_file.index.content)
 }
 
 resource "aws_s3_bucket_website_configuration" "hosting" {
@@ -130,3 +128,7 @@ resource "aws_s3_bucket_website_configuration" "hosting" {
   }
 }
 
+
+data "local_file" "index" {
+  filename = "${path.root}/../frontend/index.html"
+}
