@@ -60,7 +60,7 @@ jobs:
       - name: Download Terraform
         uses: hashicorp/setup-terraform@v3
       - name: Terraform Init
-        run: terraform -chdir=./infrastructure init -backend-config=backend.hcl
+        run: terraform -chdir="./infrastructure" init  -backend-config=./infrastructure/backend.hcl
       - name: Create providers.tf
         run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" ./infrastructure/providers.tf
       - name: Terraform Validate
@@ -96,7 +96,7 @@ jobs:
       - name: Download Terraform
         uses: hashicorp/setup-terraform@v3
       - name: Terraform Init
-        run: terraform -chdir="./infrastructure" init  -backend-config=backend.hcl
+        run: terraform -chdir="./infrastructure" init  -backend-config=./infrastructure/backend.hcl
       - name: Terraform Apply
         run: terraform -chdir="./infrastructure" apply "development.tfplan"
   plan_destroy:
@@ -119,7 +119,7 @@ jobs:
       - name: Download Terraform
         uses: hashicorp/setup-terraform@v3
       - name: Terraform Init
-        run: terraform -chdir="./infrastructure" init  -backend-config=backend.hcl
+        run: terraform -chdir="./infrastructure" init  -backend-config=./infrastructure/backend.hcl
       - name: Terraform Plan
         run: terraform -chdir="./infrastructure" plan -var-file=environments/development.tfvars -out=development-destroy.tfplan
       - name: Upload tfplan
@@ -156,6 +156,6 @@ jobs:
       - name: Create providers.tf
         run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" ./infrastructure/providers.tf
       - name: Terraform Init
-        run: terraform -chdir="./infrastructure" init  -backend-config=./backend.hcl
+        run: terraform -chdir="./infrastructure" init  -backend-config=./infrastructure/backend.hcl
       - name: Terraform Apply
         run: terraform -chdir="./infrastructure" apply "development-destroy.tfplan"
