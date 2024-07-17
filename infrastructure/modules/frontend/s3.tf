@@ -10,6 +10,9 @@ locals {
   current_time  = formatdate("YYYY-MM-DD-hhmmss", timestamp())
 }
 
+output "path" {
+  value = local.frontend_path
+}
 
 output "s3_bucket" {
   value = aws_s3_bucket.website

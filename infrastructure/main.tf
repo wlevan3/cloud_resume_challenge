@@ -13,6 +13,12 @@ import {
 }
 
 
+
+output "path" {
+  value = module.frontend.path
+
+}
+
 output "frontend" {
   value = module.frontend.s3_bucket
 }
