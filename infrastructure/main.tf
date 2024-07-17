@@ -13,8 +13,8 @@ import {
 }
 
 
-output "frontend_path" {
-  value = module.frontend.local.frontend_path
+output "frontend" {
+  value = module.frontend
 }
 
 output "s3_link" {
