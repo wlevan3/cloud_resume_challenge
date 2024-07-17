@@ -11,6 +11,11 @@ locals {
 }
 
 
+output "s3_bucket" {
+  value = aws_s3_bucket.website
+}
+
+
 resource "aws_s3_bucket" "website" {
   bucket = "${var.s3_bucket_name}-${var.env}"
 }

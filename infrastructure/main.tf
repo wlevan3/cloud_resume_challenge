@@ -14,7 +14,7 @@ import {
 
 
 output "frontend" {
-  value = module.frontend
+  value = module.frontend.s3_bucket
 }
 
 # output "s3_link" {
