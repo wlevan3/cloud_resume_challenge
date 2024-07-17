@@ -1,7 +1,7 @@
-output "website_url" {
-  description = "Website URL (HTTPS)"
-  value       = aws_cloudfront_distribution.distribution.domain_name
-}
+# output "website_url" {
+#   description = "Website URL (HTTPS)"
+#   value       = aws_cloudfront_distribution.distribution.domain_name
+# }
 
 output "s3_url" {
   description = "S3 hosting URL (HTTP)"
