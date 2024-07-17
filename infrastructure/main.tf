@@ -17,6 +17,6 @@ output "frontend" {
   value = module.frontend
 }
 
-output "s3_link" {
-  value = module.frontend.aws_s3_bucket.website.website_endpoint
-}
+# output "s3_link" {
+#   value = module.frontend.aws_s3_bucket.website.website_endpoint
+# }
