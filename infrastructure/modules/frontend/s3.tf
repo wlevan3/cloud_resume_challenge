@@ -77,7 +77,7 @@ resource "aws_s3_bucket_policy" "allow_access_from_specific_role" {
         Effect    = "Allow"
         Principal = "*"
         Action    = "s3:*"
-        Resource  = "${aws_s3_bucket.website.arn}/*"
+        Resource  = ["${aws_s3_bucket.website.arn}/*", "${aws_s3_bucket.website.arn}"]
         Condition = {
           StringEquals = {
             "aws:PrincipalArn" = "arn:aws:iam::523671527743:role/GithubActionsCICD"
@@ -85,17 +85,14 @@ resource "aws_s3_bucket_policy" "allow_access_from_specific_role" {
         }
       },
       {
-        Sid       = "DenyAllExceptSpecificRole"
-        Effect    = "Deny"
+        Sid       = "AllowSpecificRoleAccess1"
+        Effect    = "Allow"
         Principal = "*"
         Action    = "s3:*"
-        Resource = [
-          aws_s3_bucket.website.arn,
-          "${aws_s3_bucket.website.arn}/*"
-        ]
+        Resource  = ["${aws_s3_bucket.website.arn}/*", "${aws_s3_bucket.website.arn}"]
         Condition = {
-          StringNotEquals = {
-            "aws:PrincipalArn" = "arn:aws:iam::523671527743:role/GithubActionsCICD"
+          IpAddress = {
+            "aws:SourceIp" = " 98.255.239.145/24"
           }
         }
       }

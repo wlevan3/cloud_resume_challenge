@@ -7,7 +7,7 @@ module "frontend" {
 
 
 
-import {
-  to = module.frontend.aws_s3_bucket.website
-  id = "wlevan3-cloud-resume-challenge-development"
-}
+# import {
+#   to = module.frontend.aws_s3_bucket.website
+#   id = "wlevan3-cloud-resume-challenge-development"
+# }
