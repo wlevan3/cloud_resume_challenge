@@ -36,33 +36,75 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
 }
 
 
-resource "aws_s3_bucket_public_access_block" "bucket_access_block" {
-  bucket = aws_s3_bucket.website.id
+# resource "aws_s3_bucket_public_access_block" "bucket_access_block" {
+#   bucket = aws_s3_bucket.website.id
 
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
+#   block_public_acls       = true
+#   block_public_policy     = true
+#   ignore_public_acls      = true
+#   restrict_public_buckets = true
+# }
+
+
+
+# resource "aws_s3_bucket_policy" "bucket_policy" {
+#   depends_on = [aws_s3_bucket_public_access_block.bucket_access_block]
+#   bucket     = aws_s3_bucket.website.id
+#   policy = jsonencode(
+#     {
+#       "Version" : "2012-10-17",
+#       "Statement" : [
+#         {
+#           "Sid" : "PublicReadGetObject",
+#           "Effect" : "Allow",
+#           "Principal" : "*",
+#           "Action" : "s3:GetObject",
+#           "Resource" : "arn:aws:s3:::${aws_s3_bucket.website.id}/*"
+#         }
+#       ]
+#     }
+#   )
+# }
 
 resource "aws_s3_bucket_policy" "bucket_policy" {
-  depends_on = [aws_s3_bucket_public_access_block.bucket_access_block]
-  bucket     = aws_s3_bucket.website.id
-  policy = jsonencode(
-    {
-      "Version" : "2012-10-17",
-      "Statement" : [
-        {
-          "Sid" : "PublicReadGetObject",
-          "Effect" : "Allow",
-          "Principal" : "*",
-          "Action" : "s3:GetObject",
-          "Resource" : "arn:aws:s3:::${aws_s3_bucket.website.id}/*"
+  bucket = aws_s3_bucket.website.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "IPAllow"
+        Effect    = "Allow"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = [
+          "${aws_s3_bucket.website.arn}",
+          "${aws_s3_bucket.website.arn}/*"
+        ]
+        Condition = {
+          IpAddress = {
+            "aws:SourceIp" = "98.255.239.145/32"
+          }
         }
-      ]
-    }
-  )
+      },
+      {
+        Sid       = "DenyAllExceptSpecificIP"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = [
+          "${aws_s3_bucket.website.arn}",
+          "${aws_s3_bucket.website.arn}/*"
+        ]
+        Condition = {
+          NotIpAddress = {
+            "aws:SourceIp" = "98.255.239.145/32"
+          }
+        }
+      }
+    ]
+  })
 }
+
 
 resource "aws_s3_object" "file" {
   for_each     = fileset(local.frontend_path, "*.{html,css,js}")
