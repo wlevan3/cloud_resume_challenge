@@ -115,7 +115,7 @@ resource "aws_s3_bucket_policy" "allow_access_from_specific_role" {
 
 resource "aws_s3_object" "file" {
   bucket  = aws_s3_bucket.website.id
-  key     = data.local_file.index
+  key     = "index.html"
   content = data.local_file.index.content
   etag    = filemd5(data.local_file.index.content)
 }
