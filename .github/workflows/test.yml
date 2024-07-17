@@ -60,13 +60,13 @@ jobs:
       - name: Download Terraform
         uses: hashicorp/setup-terraform@v3
       - name: Terraform Init
-        run: terraform -chdir=./infrastructure init
+        run: terraform -chdir=./infrastructure init -backend-config=./backend.hcl
       - name: Create providers.tf
         run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" ./infrastructure/providers.tf
       - name: Terraform Validate
         run: terraform -chdir=./infrastructure validate
       - name: Terraform Plan
-        run: terraform -chdir=./infrastructure plan -out=development.tfplan  -var-file=./environments/development.tfvars
+        run: terraform -chdir=./infrastructure plan -out=development.tfplan  -var-file=./environments/development.tfvars  -backend-config=./backend.hcl
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -96,9 +96,9 @@ jobs:
       - name: Download Terraform
         uses: hashicorp/setup-terraform@v3
       - name: Terraform Init
-        run: terraform -chdir="./infrastructure" init
+        run: terraform -chdir="./infrastructure" init  -backend-config=./backend.hcl
       - name: Terraform Apply
-        run: terraform -chdir="./infrastructure" apply "development.tfplan"
+        run: terraform -chdir="./infrastructure" apply "development.tfplan"  -backend-config=./backend.hcl
   plan_destroy:
     needs: [apply]
     runs-on: ubuntu-latest
@@ -117,9 +117,9 @@ jobs:
       - name: Download Terraform
         uses: hashicorp/setup-terraform@v3
       - name: Terraform Init
-        run: terraform -chdir="./infrastructure" init
+        run: terraform -chdir="./infrastructure" init  -backend-config=./backend.hcl
       - name: Terraform Plan
-        run: terraform -chdir="./infrastructure" plan -var-file=environments/development.tfvars -out=development-destroy.tfplan
+        run: terraform -chdir="./infrastructure" plan -var-file=environments/development.tfvars -out=development-destroy.tfplan  -backend-config=./backend.hcl
       - name: Upload tfplan
         uses: actions/upload-artifact@v4
         with:
@@ -151,7 +151,9 @@ jobs:
       - run: ls -al ./infrastructure
       - name: Download Terraform
         uses: hashicorp/setup-terraform@v3
+      - name: Create providers.tf
+        run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" ./infrastructure/providers.tf
       - name: Terraform Init
-        run: terraform -chdir="./infrastructure" init
+        run: terraform -chdir="./infrastructure" init  -backend-config=./backend.hcl
       - name: Terraform Apply
-        run: terraform -chdir="./infrastructure" apply "development-destroy.tfplan"
+        run: terraform -chdir="./infrastructure" apply "development-destroy.tfplan"  -backend-config=./backend.hcl
