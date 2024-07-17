@@ -24,7 +24,7 @@ jobs:
         run: sed -i.tmp "s/AWSREGION/${{vars.AWS_REGION}}/g" ./infrastructure/providers.tf
       - name: Download Terraform
         uses: hashicorp/setup-terraform@v3
-      - run: terraform -chdir=./infrastructure init
+      - run: terraform -chdir=./infrastructure init -backend-config=./backend.hcl
       - name: Terraform Plan Destroy
         run: terraform -chdir=./infrastructure plan -destroy -var-file=environments/development.tfvars -out=development-destroy.tfplan
       - name: Upload tfplan
@@ -59,6 +59,6 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
-        run: terraform -chdir=./infrastructure init
+        run: terraform -chdir=./infrastructure init -backend-config=./backend.hcl
       - name: Terraform Apply  Destroy
         run: terraform -chdir="./infrastructure" apply "../development-destroy.tfplan"
