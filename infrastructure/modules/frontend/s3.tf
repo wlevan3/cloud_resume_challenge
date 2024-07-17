@@ -5,9 +5,15 @@ locals {
     ".js" : "text/javascript"
   }
 
+
   frontend_path = "${path.module}/../../frontend"
   current_time  = formatdate("YYYY-MM-DD-hhmmss", timestamp())
 }
+
+resource "aws_s3_bucket" "website" {
+  bucket = "${var.s3_bucket_name}-${var.env}"
+}
+
 
 resource "aws_kms_key" "key" {
   description         = "This key is used to encrypt bucket objects"
@@ -19,9 +25,6 @@ resource "aws_kms_alias" "key" {
   name          = "alias/${var.s3_bucket_name}-${local.current_time}"
 }
 
-resource "aws_s3_bucket" "website" {
-  bucket = "${var.s3_bucket_name}-${var.env}"
-}
 
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
@@ -92,7 +95,7 @@ resource "aws_s3_bucket_policy" "allow_access_from_specific_role" {
         Resource  = ["${aws_s3_bucket.website.arn}/*", "${aws_s3_bucket.website.arn}"]
         Condition = {
           IpAddress = {
-            "aws:SourceIp" = " 98.255.239.145/24"
+            "aws:SourceIp" = "98.255.239.145/32"
           }
         }
       }
