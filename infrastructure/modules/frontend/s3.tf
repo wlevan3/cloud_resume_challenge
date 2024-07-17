@@ -6,8 +6,16 @@ locals {
   }
 
 
-  frontend_path = "${path.module}/../../frontend"
+  frontend_path = "${path.root}/../../frontend"
   current_time  = formatdate("YYYY-MM-DD-hhmmss", timestamp())
+}
+
+output "frontend_path" {
+  value = local.frontend_path
+}
+
+output "s3_link" {
+  value = aws_s3_bucket.website.website_endpoint
 }
 
 resource "aws_s3_bucket" "website" {
