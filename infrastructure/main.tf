@@ -23,6 +23,7 @@ output "frontend" {
   value = module.frontend.s3_bucket
 }
 
-# output "s3_link" {
-#   value = module.frontend.aws_s3_bucket.website.website_endpoint
-# }
+output "cf_url" {
+  description = "CLOUDFRONT URL FROM ROOT OUTPUT"
+  value       = module.frontend.website_url
+}
