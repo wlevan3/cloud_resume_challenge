@@ -19,16 +19,16 @@ import {
 
 
 
-output "path" {
-  value = module.frontend.path
+# output "path" {
+#   value = module.frontend.path
 
-}
+# }
 
-output "frontend" {
-  value = module.frontend.s3_bucket
-}
+# output "frontend" {
+#   value = module.frontend.s3_bucket
+# }
 
-output "cf_url" {
-  description = "CLOUDFRONT URL FROM ROOT OUTPUT"
-  value       = module.frontend.website_url
+output "domain_name_from_root" {
+  description = "domain_name_from_root"
+  value       = module.frontend.domain_name
 }
