@@ -12,6 +12,11 @@ import {
   id = "wlevan3-cloud-resume-challenge-development"
 }
 
+import {
+  to = module.frontend.aws_cloudfront_distribution.distribution
+  id = "E1J7ZKEMNPIO1S"
+}
+
 
 
 output "path" {
