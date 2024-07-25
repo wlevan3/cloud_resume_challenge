@@ -24,66 +24,28 @@ resource "aws_s3_bucket" "website" {
 }
 
 
-resource "aws_kms_key" "key" {
-  description         = "This key is used to encrypt bucket objects"
-  enable_key_rotation = true
-}
-
-resource "aws_kms_alias" "key" {
-  target_key_id = aws_kms_key.key.id
-  name          = "alias/${var.s3_bucket_name}-${local.current_time}"
-}
-
-
-
-resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
-  bucket = aws_s3_bucket.website.id
-
-  rule {
-    apply_server_side_encryption_by_default {
-      kms_master_key_id = aws_kms_key.key.arn
-      sse_algorithm     = "aws:kms"
-    }
-  }
-}
-
-
-# resource "aws_s3_bucket_public_access_block" "bucket_access_block" {
-#   bucket = aws_s3_bucket.website.id
-
-#   block_public_acls       = true
-#   block_public_policy     = true
-#   ignore_public_acls      = true
-#   restrict_public_buckets = true
-# }
-
-
-
-# resource "aws_s3_bucket_policy" "bucket_policy" {
-#   depends_on = [aws_s3_bucket_public_access_block.bucket_access_block]
-#   bucket     = aws_s3_bucket.website.id
-#   policy = jsonencode(
-#     {
-#       "Version" : "2012-10-17",
-#       "Statement" : [
-#         {
-#           "Sid" : "PublicReadGetObject",
-#           "Effect" : "Allow",
-#           "Principal" : "*",
-#           "Action" : "s3:GetObject",
-#           "Resource" : "arn:aws:s3:::${aws_s3_bucket.website.id}/*"
-#         }
-#       ]
-#     }
-#   )
-# }
-
 resource "aws_s3_bucket_policy" "allow_access_from_specific_role" {
   bucket = aws_s3_bucket.website.id
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
+      {
+        "Version" : "2012-10-17",
+        "Statement" : [
+          {
+            "Sid" : "PublicReadGetObject",
+            "Effect" : "Allow",
+            "Principal" : "*",
+            "Action" : [
+              "s3:GetObject"
+            ],
+            "Resource" : [
+              "${aws_s3_bucket.website.arn}/*"
+            ]
+          }
+        ]
+      },
       {
         Sid       = "AllowSpecificRoleAccess"
         Effect    = "Allow"
@@ -93,18 +55,6 @@ resource "aws_s3_bucket_policy" "allow_access_from_specific_role" {
         Condition = {
           StringEquals = {
             "aws:PrincipalArn" = "arn:aws:iam::523671527743:role/GithubActionsCICD"
-          }
-        }
-      },
-      {
-        Sid       = "AllowSpecificRoleAccess1"
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = "s3:*"
-        Resource  = ["${aws_s3_bucket.website.arn}/*", "${aws_s3_bucket.website.arn}"]
-        Condition = {
-          IpAddress = {
-            "aws:SourceIp" = "98.255.239.145/32"
           }
         }
       }
