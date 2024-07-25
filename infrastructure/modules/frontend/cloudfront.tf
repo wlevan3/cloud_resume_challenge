@@ -2,9 +2,15 @@ resource "aws_cloudfront_distribution" "distribution" {
   enabled         = true
   is_ipv6_enabled = true
 
+  default_root_object = "index.html"
+
   origin {
-    domain_name = aws_s3_bucket_website_configuration.hosting.website_endpoint
-    origin_id   = aws_s3_bucket.website.bucket_regional_domain_name
+    connection_attempts = 3
+    connection_timeout  = 10
+    domain_name         = aws_s3_bucket_website_configuration.hosting.website_endpoint
+    origin_id           = aws_s3_bucket.website.bucket_regional_domain_name
+
+
 
     custom_origin_config {
       http_port                = 80
@@ -39,5 +45,6 @@ resource "aws_cloudfront_distribution" "distribution" {
     allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods         = ["GET", "HEAD"]
     target_origin_id       = aws_s3_bucket.website.bucket_regional_domain_name
+
   }
 }
