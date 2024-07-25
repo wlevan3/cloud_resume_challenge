@@ -59,9 +59,10 @@ resource "aws_s3_bucket_policy" "allow_access_from_specific_role" {
 
 
 resource "aws_s3_object" "file" {
-  bucket  = aws_s3_bucket.website.id
-  key     = "index.html"
-  content = data.local_file.index.content
+  bucket       = aws_s3_bucket.website.id
+  key          = "index.html"
+  content      = data.local_file.index.content
+  content_type = "text/html"
 }
 
 resource "aws_s3_bucket_website_configuration" "hosting" {
