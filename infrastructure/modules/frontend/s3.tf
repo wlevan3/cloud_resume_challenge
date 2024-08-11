@@ -19,6 +19,25 @@ resource "aws_s3_bucket" "website_domain" {
   bucket = "walterlevan.com"
 }
 
+resource "aws_s3_bucket_policy" "allow_all" {
+  bucket = aws_s3_bucket.website_domain.id
+
+  policy = data.aws_iam_policy_document.allow_access_from_another_account.json
+
+}
+
+data "aws_iam_policy_document" "allow_access_from_another_account" {
+  statement {
+    sid    = "PublicReadGetObject"
+    effect = "Allow"
+    actions = [
+      "s3:GetObject"
+    ]
+    resources = [
+      "${aws_s3_bucket.website_domain.arn}/*"
+    ]
+  }
+}
 resource "aws_s3_bucket" "website_logs" {
   bucket = "logs.walterlevan.com"
 }
