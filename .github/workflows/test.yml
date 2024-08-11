@@ -114,13 +114,13 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd frontend
+          cd frontend/my-react-vite-project
           ls -al
           npm ci
 
       - name: Build Vite React project
         run: |
-          cd frontend
+          cd frontend/my-react-vite-project
           ls -al
           npm run build
 
