@@ -8,7 +8,7 @@ resource "aws_cloudfront_distribution" "distribution" {
     # connection_attempts = 3
     # connection_timeout  = 10
     domain_name = aws_s3_bucket_website_configuration.hosting.website_endpoint
-    origin_id   = aws_s3_bucket.website.bucket_regional_domain_name
+    origin_id   = aws_s3_bucket.website_domain.bucket_regional_domain_name
 
 
 
@@ -44,7 +44,7 @@ resource "aws_cloudfront_distribution" "distribution" {
     compress               = true
     allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = aws_s3_bucket.website.bucket_regional_domain_name
+    target_origin_id       = aws_s3_bucket.website_domain.bucket_regional_domain_name
 
   }
 }
