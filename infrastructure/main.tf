@@ -32,3 +32,21 @@ output "domain_name_from_root" {
   description = "domain_name_from_root"
   value       = module.frontend.domain_name
 }
+
+
+import {
+  to = module.frontend.aws_s3_bucket.website_domain
+  id = "walterlevan.com"
+}
+
+import {
+  to = module.frontend.aws_s3_bucket.website_subdomain
+  id = "www.walterlevan.com"
+}
+
+import {
+  to = module.frontend.aws_s3_bucket.website_logs
+  id = "logs.walterlevan.com"
+}
+
+
