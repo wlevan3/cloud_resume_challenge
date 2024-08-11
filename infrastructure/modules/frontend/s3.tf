@@ -33,6 +33,10 @@ data "aws_iam_policy_document" "allow_access_from_another_account" {
     actions = [
       "s3:GetObject"
     ]
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
     resources = [
       "${aws_s3_bucket.website_domain.arn}/*"
     ]
