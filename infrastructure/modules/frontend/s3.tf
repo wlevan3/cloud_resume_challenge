@@ -10,9 +10,9 @@ locals {
   current_time  = formatdate("YYYY-MM-DD-hhmmss", timestamp())
 }
 
-resource "aws_s3_bucket" "website" {
-  bucket = "${var.s3_bucket_name}-${var.env}"
-}
+# resource "aws_s3_bucket" "website" {
+#   bucket = "${var.s3_bucket_name}-${var.env}"
+# }
 
 
 resource "aws_s3_bucket" "website_domain" {
@@ -94,7 +94,7 @@ resource "aws_s3_bucket_policy" "allow_access_from_specific_role" {
 # }
 
 resource "aws_s3_bucket_website_configuration" "hosting" {
-  bucket = aws_s3_bucket.website.id
+  bucket = aws_s3_bucket.website_domain.id
 
   index_document {
     suffix = "index.html"
