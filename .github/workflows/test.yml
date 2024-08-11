@@ -99,6 +99,44 @@ jobs:
         run: terraform -chdir="./infrastructure" init  -backend-config=./infrastructure/backend.hcl
       - name: Terraform Apply
         run: terraform -chdir="./infrastructure" apply "development.tfplan"
+
+  build_and_deploy_frontend:
+    needs: [apply]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Build Vite React project
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: arn:aws:iam::${{vars.AWS_ACCOUNT_ID_DEV}}:role/${{vars.ROLE_NAME}}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Deploy to S3
+        run: |
+          aws s3 sync frontend/dist/ s3://${{ vars.S3_BUCKET_NAME }} --delete
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+
   plan_destroy:
     needs: [apply]
     runs-on: ubuntu-latest
