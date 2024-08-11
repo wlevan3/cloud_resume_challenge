@@ -101,7 +101,7 @@ jobs:
         run: terraform -chdir="./infrastructure" apply "development.tfplan"
 
   build_and_deploy_frontend:
-    needs: [apply]
+    # needs: [apply]
     runs-on: ubuntu-latest
     steps:
       - name: Git clone the repository
@@ -115,11 +115,13 @@ jobs:
       - name: Install dependencies
         run: |
           cd frontend
+          ls -al
           npm ci
 
       - name: Build Vite React project
         run: |
           cd frontend
+          ls -al
           npm run build
 
       - name: Configure AWS credentials
